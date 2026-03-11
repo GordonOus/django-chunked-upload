@@ -98,6 +98,39 @@ class AbstractChunkedUpload(models.Model):
         self.file.open(mode="rb")
         return UploadedFile(file=self.file, name=self.filename, size=self.offset)
 
+    def rename_completed_file(self, save=True):
+        """
+        Rename the underlying storage file from the temporary ``.part``
+        name to the original filename.  Uses the storage API so it works
+        with any backend (local filesystem, S3, etc.).
+        """
+        import os
+
+        old_path = self.file.name  # storage-relative path
+        if not old_path.endswith(".part"):
+            return  # nothing to rename
+
+        directory = os.path.dirname(old_path)
+        # Build new name: <upload_id>_<original_filename>
+        safe_name = os.path.basename(self.filename)
+        new_name = os.path.join(directory, f"{self.upload_id}_{safe_name}")
+
+        storage = self.file.storage
+        self.file.close()
+
+        # Read content, save under new name, delete old file
+        with storage.open(old_path, "rb") as f:
+            content = f.read()
+
+        from django.core.files.base import ContentFile
+
+        actual_name = storage.save(new_name, ContentFile(content))
+        storage.delete(old_path)
+
+        self.file.name = actual_name
+        if save:
+            self.save()
+
     class Meta:
         abstract = True
 

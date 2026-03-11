@@ -248,6 +248,7 @@ class ChunkedUploadCompleteView(ChunkedUploadBaseView):
         chunked_upload.status = COMPLETE
         chunked_upload.completed_on = timezone.now()
         self._save(chunked_upload)
+        chunked_upload.rename_completed_file()
         self.on_completion(chunked_upload.get_uploaded_file(), request)
 
         return Response(
