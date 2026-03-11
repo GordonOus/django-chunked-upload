@@ -204,8 +204,14 @@ class ChunkedUploadCompleteView(ChunkedUploadBaseView):
 
     do_md5_check = True
 
-    def on_completion(self, uploaded_file, request):
-        """Placeholder — define what to do when upload is complete."""
+    def on_completion(self, chunked_upload, request):
+        """
+        Called when the upload is complete.  By default, renames the
+        temporary ``.part`` file to the original filename.  Override to
+        add custom post-upload logic (the rename still runs unless you
+        skip the ``super()`` call).
+        """
+        chunked_upload.rename_completed_file()
 
     def is_valid_chunked_upload(self, chunked_upload):
         if chunked_upload.status == COMPLETE:
@@ -248,8 +254,7 @@ class ChunkedUploadCompleteView(ChunkedUploadBaseView):
         chunked_upload.status = COMPLETE
         chunked_upload.completed_on = timezone.now()
         self._save(chunked_upload)
-        chunked_upload.rename_completed_file()
-        self.on_completion(chunked_upload.get_uploaded_file(), request)
+        self.on_completion(chunked_upload, request)
 
         return Response(
             self.get_response_data(chunked_upload, request),
