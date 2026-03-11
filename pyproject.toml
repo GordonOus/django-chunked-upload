@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "django-chunked-upload"
+version = "2.0.0"
+description = "Upload large files to Django in multiple chunks, with the ability to resume if the upload is interrupted."
+readme = "README.md"
+license = "MIT-0"
+requires-python = ">=3.10"
+authors = [
+    { name = "CareConekt", email = "dev@careconekt.com" },
+]
+keywords = ["django", "upload", "chunked", "resumable", "large-files"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Framework :: Django :: 5.0",
+    "Framework :: Django :: 5.1",
+    "Framework :: Django :: 5.2",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "django>=5.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/careconekt/django-chunked-upload"
+Documentation = "https://github.com/careconekt/django-chunked-upload#readme"
+Repository = "https://github.com/careconekt/django-chunked-upload"
+Issues = "https://github.com/careconekt/django-chunked-upload/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+chunked_upload = ["py.typed"]
